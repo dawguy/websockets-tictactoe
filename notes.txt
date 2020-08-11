@@ -1,0 +1,11 @@
+What I want to do.
+
+Home base that knows the layout and is able to find the position of all the robots
+
+A function which allows the robots to ask where they are
+
+Task assignment and planning for the robots from a central hub
+-- Maybe in the future make each robot think for itself, but I like the idea of having one place do everything.
+
+Functions which allow the robots move in a direction
+
