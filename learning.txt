@@ -1,1 +1,20 @@
 Tic tac toe
+
+Phases:
+
+Phase 1:
+The basic rules of tic-tac-toe are implemented client side. The game can be played and restarted (maybe)
+
+Phase 2:
+The game of tic-tac-toe can be played via REST endpoints instead of terminal commands
+
+Phase 3:
+The game of GO has a front-end implemented with websockets so any changes made to the state of the board will be reflected on the FE
+
+Phase 4:
+Two web clients can play a game of tic tac toe against each other via the FE.
+
+This is all that I definitely want to get done. Random other ideas will be listed below.
+
+    Message queueing using Kafka. The goal is to allow a user to pre-move and have their moves all processed depending on how each user plays.
+    Support for multiple games going at a time. Create "Servers" which support x games at a time and have some ability to scale that.
