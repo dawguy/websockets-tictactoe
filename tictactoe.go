@@ -1,6 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
 
 var a [9]string
 var turn = 1
@@ -24,7 +30,13 @@ func placeValue(x int, y int) bool {
 }
 
 func boardFull() bool {
-	return false
+	for _, v := range a {
+		if v == " " {
+			return false
+		}
+	}
+
+	return true
 }
 
 func reset() {
@@ -52,22 +64,25 @@ func draw() {
 	}
 }
 
+func askInput() (int, int) {
+	reader := bufio.NewReader(os.Stdin)
+	text, _ := reader.ReadString('\n')
+	s := strings.Split(text, ",")
+
+	var x, _ = strconv.Atoi(strings.Trim(s[0], " "))
+	var y, _ = strconv.Atoi(strings.Trim(s[1], " \n"))
+
+	return x, y
+}
+
 func main() {
 	reset()
 
-	draw()
-	placeValue(1, 1)
-	placeValue(1, 0)
-	placeValue(2, 0)
-	placeValue(0, 2)
-	draw()
-	placeValue(2, 1)
-	placeValue(0, 1)
-	placeValue(2, 2)
-
-	draw()
+	for !boardFull() {
+		draw()
+		var x, y = askInput()
+		placeValue(x, y)
+	}
 
 	reset()
-
-	draw()
 }
