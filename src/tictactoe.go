@@ -11,7 +11,14 @@ import (
 var a [9]string
 var turn = 1
 
-func placeValue(x int, y int) bool {
+// Point an x,y coordinate pair
+type Point struct {
+	X int `json:"x"`
+	Y int `json:"y"`
+}
+
+// PlaceValue adds a X or O to the tictactoe board
+func PlaceValue(x int, y int) bool {
 	var ind = y*3 + x
 
 	if ind >= 0 && ind < len(a) && a[ind] == " " {
@@ -24,9 +31,9 @@ func placeValue(x int, y int) bool {
 		turn++
 
 		return true
-	} else {
-		return false
 	}
+
+	return false
 }
 
 func boardFull() bool {
@@ -39,7 +46,8 @@ func boardFull() bool {
 	return true
 }
 
-func reset() {
+// Reset the tictactoe game to a blank board
+func Reset() {
 	for i := range a {
 		a[i] = " "
 	}
@@ -53,7 +61,8 @@ func clearDraw() {
 	fmt.Printf("\nTurn %d:\n", turn)
 }
 
-func draw() {
+// Draw draws the current state of the tictactoe board to stdout
+func Draw() {
 	clearDraw()
 
 	for j := 0; j < 3; j++ {
@@ -73,16 +82,4 @@ func askInput() (int, int) {
 	var y, _ = strconv.Atoi(strings.Trim(s[1], " \n"))
 
 	return x, y
-}
-
-func main() {
-	reset()
-
-	for !boardFull() {
-		draw()
-		var x, y = askInput()
-		placeValue(x, y)
-	}
-
-	reset()
 }

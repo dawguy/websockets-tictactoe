@@ -18,3 +18,7 @@ This is all that I definitely want to get done. Random other ideas will be liste
 
     Message queueing using Kafka. The goal is to allow a user to pre-move and have their moves all processed depending on how each user plays.
     Support for multiple games going at a time. Create "Servers" which support x games at a time and have some ability to scale that.
+
+
+At some point:
+Figure out GOPATH and turn these all into packages
