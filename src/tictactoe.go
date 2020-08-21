@@ -19,6 +19,10 @@ type Point struct {
 
 // PlaceValue adds a X or O to the tictactoe board
 func PlaceValue(x int, y int) bool {
+	if CheckWin() {
+		return false
+	}
+
 	var ind = y*3 + x
 
 	if ind >= 0 && ind < len(a) && a[ind] == " " {
@@ -36,7 +40,8 @@ func PlaceValue(x int, y int) bool {
 	return false
 }
 
-func boardFull() bool {
+// BoardFull determines if there are any available tiles for a letter to be placed
+func BoardFull() bool {
 	for _, v := range a {
 		if v == " " {
 			return false
@@ -44,6 +49,71 @@ func boardFull() bool {
 	}
 
 	return true
+}
+
+func getInd(x int, y int) int {
+	var ind = y*3 + x
+
+	if ind > len(a) {
+		return -1
+	}
+
+	return ind
+}
+
+// GetWinner returns the character of the winning player.
+func GetWinner() string {
+	if turn%2 == 0 {
+		return "X"
+	} else {
+		return "O"
+	}
+}
+
+// CheckWin determines if there is a winner
+func CheckWin() bool {
+	// Horizontal victory checks
+	for i := 0; i < 3; i++ {
+		col1 := a[getInd(0, i)]
+
+		if col1 == " " {
+			continue
+		}
+
+		col2 := a[getInd(1, i)]
+		col3 := a[getInd(2, i)]
+
+		if col1 == col2 && col2 == col3 {
+			return true
+		}
+	}
+
+	// Vertical victory checks
+	for i := 0; i < 3; i++ {
+		row1 := a[getInd(i, 0)]
+
+		if row1 == " " {
+			continue
+		}
+
+		row2 := a[getInd(i, 1)]
+		row3 := a[getInd(i, 2)]
+
+		if row1 == row2 && row2 == row3 {
+			return true
+		}
+	}
+
+	// Diagonals
+	if a[0] != " " && a[0] == a[4] && a[0] == a[8] {
+		return true
+	}
+
+	if a[2] != " " && a[2] == a[4] && a[2] == a[6] {
+		return true
+	}
+
+	return false
 }
 
 // Reset the tictactoe game to a blank board

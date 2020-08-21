@@ -9,7 +9,7 @@ Phase 2:
 The game of tic-tac-toe can be played via REST endpoints instead of terminal commands
 
 Phase 3:
-The game of GO has a front-end implemented with websockets so any changes made to the state of the board will be reflected on the FE
+The game of TOE has a front-end implemented with websockets so any changes made to the state of the board will be reflected on the FE
 
 Phase 4:
 Two web clients can play a game of tic tac toe against each other via the FE.

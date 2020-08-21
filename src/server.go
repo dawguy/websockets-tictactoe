@@ -40,6 +40,13 @@ func place(w http.ResponseWriter, req *http.Request) {
 
 	PlaceValue(point.X, point.Y)
 	Draw()
+
+	if CheckWin() {
+		winChar := GetWinner()
+		fmt.Printf("%v won the game!", winChar)
+	} else if BoardFull() {
+		fmt.Printf("Tie Game\n")
+	}
 }
 
 func draw(w http.ResponseWriter, req *http.Request) {
