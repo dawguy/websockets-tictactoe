@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"bufio"
@@ -65,9 +65,9 @@ func getInd(x int, y int) int {
 func GetWinner() string {
 	if turn%2 == 0 {
 		return "X"
-	} else {
-		return "O"
 	}
+
+	return "O"
 }
 
 // CheckWin determines if there is a winner

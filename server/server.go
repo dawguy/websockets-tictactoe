@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/dawguy/tictactoe/game"
 )
 
 func hello(w http.ResponseWriter, req *http.Request) {
@@ -20,8 +22,8 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
-	Reset()
-	Draw()
+	game.Reset()
+	game.Draw()
 }
 
 func place(w http.ResponseWriter, req *http.Request) {
@@ -31,26 +33,26 @@ func place(w http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	var point Point
+	var point game.Point
 	err = json.Unmarshal(b, &point)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	PlaceValue(point.X, point.Y)
-	Draw()
+	game.PlaceValue(point.X, point.Y)
+	game.Draw()
 
-	if CheckWin() {
-		winChar := GetWinner()
+	if game.CheckWin() {
+		winChar := game.GetWinner()
 		fmt.Printf("%v won the game!", winChar)
-	} else if BoardFull() {
+	} else if game.BoardFull() {
 		fmt.Printf("Tie Game\n")
 	}
 }
 
 func draw(w http.ResponseWriter, req *http.Request) {
-	Draw()
+	game.Draw()
 }
 
 func main() {
