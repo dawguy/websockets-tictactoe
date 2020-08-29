@@ -4,10 +4,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"strings"
+
+	"github.com/gorilla/websocket"
 
 	"github.com/dawguy/tictactoe/game"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin:     unsafeCheck,
+}
+
+func unsafeCheck(r *http.Request) bool {
+	return true
+}
 
 func hello(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "hello\n")
@@ -22,6 +36,8 @@ func headers(w http.ResponseWriter, req *http.Request) {
 }
 
 func start(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	game.Reset()
 	game.Draw()
 }
@@ -55,14 +71,55 @@ func draw(w http.ResponseWriter, req *http.Request) {
 	game.Draw()
 }
 
-func main() {
-	http.HandleFunc("/game/start", start)
+func getBoard(w http.ResponseWriter, _ *http.Request) {
+	var a = game.GetBoard()
+	var board = strings.Join(a[:], ",")
+	dat := []byte(board)
 
-	// Both are valid aliases for place
+	w.Write(dat)
+}
+
+func serverGame() {
+
+}
+
+func websocketHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	fmt.Println("hit")
+	conn, err := upgrader.Upgrade(w, r, nil)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	for {
+		messageType, p, err := conn.ReadMessage()
+
+		var response = []byte("Received: ")
+		response = append(response, p[:]...)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		if err := conn.WriteMessage(messageType, response); err != nil {
+			log.Println(err)
+			return
+		}
+	}
+}
+
+func main() {
+	http.HandleFunc("/socket", websocketHandler)
+
 	http.HandleFunc("/game/move", place)
 	http.HandleFunc("/game/place", place)
-
+	http.HandleFunc("/game/start", start)
 	http.HandleFunc("/game/draw", draw)
+	http.HandleFunc("/game/getBoard", getBoard)
 
 	http.ListenAndServe(":8090", nil)
 }

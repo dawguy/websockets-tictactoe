@@ -61,6 +61,11 @@ func getInd(x int, y int) int {
 	return ind
 }
 
+// GetBoard returns the state of the board
+func GetBoard() [9]string {
+	return a
+}
+
 // GetWinner returns the character of the winning player.
 func GetWinner() string {
 	if turn%2 == 0 {
