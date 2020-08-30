@@ -8,16 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/websocket"
-
 	"github.com/dawguy/tictactoe/game"
 )
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin:     unsafeCheck,
-}
 
 func unsafeCheck(r *http.Request) bool {
 	return true
@@ -113,7 +105,12 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/socket", websocketHandler)
+	hub := newHub()
+	go hub.run()
+
+	http.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
+		serveWs(hub, w, r)
+	})
 
 	http.HandleFunc("/game/move", place)
 	http.HandleFunc("/game/place", place)
