@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
@@ -73,35 +72,6 @@ func getBoard(w http.ResponseWriter, _ *http.Request) {
 
 func serverGame() {
 
-}
-
-func websocketHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	fmt.Println("hit")
-	conn, err := upgrader.Upgrade(w, r, nil)
-
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	for {
-		messageType, p, err := conn.ReadMessage()
-
-		var response = []byte("Received: ")
-		response = append(response, p[:]...)
-
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		if err := conn.WriteMessage(messageType, response); err != nil {
-			log.Println(err)
-			return
-		}
-	}
 }
 
 func main() {

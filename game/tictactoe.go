@@ -66,6 +66,11 @@ func GetBoard() [9]string {
 	return a
 }
 
+// GetPlayerTurn returns which
+func GetPlayerTurn() int {
+	return (turn % 2) + 1
+}
+
 // GetWinner returns the character of the winning player.
 func GetWinner() string {
 	if turn%2 == 0 {

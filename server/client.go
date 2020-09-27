@@ -1,7 +1,8 @@
 package main
 
 import (
-	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -32,6 +33,22 @@ type Client struct {
 	send chan []byte
 }
 
+type Response struct {
+	Name string          `json:"name"`
+	Data json.RawMessage `json:"data"`
+}
+
+type Message struct {
+	Name string `json:"name"`
+	Data string `json:"data"`
+}
+
+type Move struct {
+	X          int `json:"x"`
+	Y          int `json:"y"`
+	PlayerTurn int `json:"player"`
+}
+
 // client to hub
 func (c *Client) readPump() {
 	defer func() {
@@ -46,6 +63,8 @@ func (c *Client) readPump() {
 	for {
 		_, message, err := c.conn.ReadMessage()
 
+		fmt.Printf("%v message\n", message)
+
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error: %v", err)
@@ -54,8 +73,31 @@ func (c *Client) readPump() {
 			break
 		}
 
-		message = bytes.TrimSpace(bytes.Replace(message, newLine, space, -1))
-		c.hub.broadcast <- message
+		var res Response
+
+		err = json.Unmarshal(message, &res)
+
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		fmt.Printf("Name: %v\n", res.Name)
+
+		switch res.Name {
+		case "place":
+			var move Move
+
+			err = json.Unmarshal(res.Data, &move)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			// Handle the move here.
+			c.hub.place <- &move
+		default:
+			return
+		}
 	}
 }
 
@@ -70,6 +112,7 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			fmt.Printf("%v", message)
 			if !ok {
 				// The hub closed the channel
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
